@@ -28,5 +28,10 @@ node{
             }
         }
     }
+    stage("deploytoProd"){
+
+        sh "echo 'deploying to Prod'"
+        deploy adapters: [tomcat9(credentialsId: 'bbe80b32-35b8-4147-8dc8-e549c73e0321', path: '', url: 'http://18.132.64.163:8080')], contextPath: null, onFailure: false, war: 'target/*war'
+    }
 
 }

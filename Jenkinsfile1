@@ -8,5 +8,9 @@ node{
         sh "echo 'Runing Junit Testing'"
         sh "${mvn}/bin/mvn clean package"
     }
+    stage('CodeQuality'){
+        sh "echo 'Runing code quality Testing'"
+        sh "${mvn}/bin/mvn sonar:sonar"
+    }
 
 }

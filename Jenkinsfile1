@@ -23,9 +23,9 @@ node{
     }
     stage('Approval Gate'){
         sh "echo 'waiting for UAT approval'"
-        timeout(time:5, unit:'DAYS'){
-            input message: 'Application ready for deployment, Please review and approve'
-        }
+        
+        input message: 'Application ready for deployment, Please review and approve'
+        
     }
 
 }

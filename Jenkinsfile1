@@ -12,5 +12,9 @@ node{
         sh "echo 'Runing code quality Testing'"
         sh "${mvn}/bin/mvn sonar:sonar"
     }
+    stage('uploadartifact'){
+        sh "echo 'uploading artifacts to nexus'"
+        sh "${mvn}/bin/mvn deploy"
+    }
 
 }

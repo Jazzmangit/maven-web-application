@@ -1,12 +1,12 @@
 node{
-    def mvn = tool name: 'maven3.8.6/bin/mvn'
+    def mvn = tool name: 'maven3.8.6'
 
 	stage('Codeclone'){
         git https://github.com/Jazzmangit/maven-web-application.git
     }
 	stage('TestBuild'){
         sh "echo 'Runing Junit Testing'"
-        sh "${mvn} clean package"
+        sh "${mvn}/bin/mvn clean package"
     }
 
 }

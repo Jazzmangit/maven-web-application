@@ -1,55 +1,12 @@
 node{
-def mavenHome = tool name: 'maven3.8.6'
+    def mvn = tool name: /Maven3.8.6/bin/mvn
 
-stage('1CodeClone'){
-sh "echo 'Clonning a code'"
-git credentialsId: 'GitHub Credential', url: 'https://github.com/obinnaaliogor/obinnaaliogor_repo.git'
-}
-stage('2test&Build'){
-sh "echo 'Running Junit Testing'"
-sh "echo 'Testing must be passed to create Artifacts' "
-sh "${mavenHome}/bin/mvn clean package"
-}
-stage('3CodeQualityReview'){
-sh "echo 'Running Quality Analysis'"
-sh "${mavenHome}/bin/mvn sonar:sonar"
-}
-
-stage('4Upload2Nexus'){
-sh "echo 'Uploading Artifacts to Artifactory'"
-sh "${mavenHome}/bin/mvn deploy"
-}
-
-stage('5deploy2UAT'){
-sh "echo 'Deployment to UAT environment'"
-deploy adapters: [tomcat9(credentialsId: 'Tomcat Credentials', path: '', url: 'http://172.31.34.244:8177/')], contextPath: null, onFailure: false, war: 'target/*war'
-}
-
-
-stage('6ApprovalGate'){
-sh "echo 'Approval Required' "
-timeout(time: 1, unit: 'MINUTES'){
-input message: 'Application ready for deployment, please kindly act accordignly'
-}
+	stage('Codeclone'){
+        git https://github.com/Jazzmangit/maven-web-application.git
+    }
+	stage('TestBuild'){
+        sh "echo 'Runing Junit Testing'"
+        sh "${mvn} clean package"
+    }
 
 }
-
-
-stage('7Deploy2Prod'){
-sh "echo 'Deployment to the Prod Environment' "
-deploy adapters: [tomcat9(credentialsId: 'Tomcat Credentials', path: '', url: 'http://172.31.46.38:8177/')], contextPath: null, onFailure: false, war: 'target/*war'
-
-}
-stage('EmailNotification'){
-emailext body: '''Hello All,
-
-Please kindly review the status of the build and act accordignly
-
-Thanks and Best Regards
-
-Austin Tabe
-''', recipientProviders: [buildUser(), contributor(), culprits(), previous(), developers(), requestor(), brokenBuildSuspects(), upstreamDevelopers()], subject: 'Build Status', to: 'bbc_team@bbc.com'
-}
-
-}
-
